@@ -17,7 +17,6 @@ namespace Wokarol.GameplayCores
         // TableData
         private List<CardT> candidates = new List<CardT>();
         private CardT model;
-        private Random random = new Random();
 
         public ReactionChooserCore(List<CardT> allCards)
         {
