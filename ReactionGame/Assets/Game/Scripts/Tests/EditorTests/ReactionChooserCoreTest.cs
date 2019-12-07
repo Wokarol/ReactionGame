@@ -14,16 +14,24 @@ public class ReactionChooserCoreTest
         public const string GameStarted = "Game Started";
     }
 
+    private List<string> eventTimeline;
+    private List<Dummy> all;
+    private ReactionChooserCore<Dummy> core;
+
+    [SetUp]
+    public void Setup()
+    {
+        eventTimeline = new List<string>();
+        all = Dummy.GetList(5);
+
+        // Creating test model
+        core = new ReactionChooserCore<Dummy>(all);
+        eventTimeline.Add(Events.CoreCreated);
+    }
+
     [Test]
     public void _01_Table_Is_Created_After_Game_Starts()
     {
-        List<string> eventTimeline = new List<string>();
-        List<Dummy> all = Dummy.GetList(5);
-
-        // Creating test model
-        var core = new ReactionChooserCore<Dummy>(all);
-        eventTimeline.Add(Events.CoreCreated);
-
         core.OnNewTable += (m, ns) => {
             Assert.That(m, Is.Not.Null, "Returned model is equal to null");
             Assert.That(ns, Is.Not.Null, "Candidates are null");
@@ -47,9 +55,6 @@ public class ReactionChooserCoreTest
     [Test]
     public void _02_NewTable_Candidates_Have_One_Model()
     {
-        List<Dummy> all = Dummy.GetList(5);
-        var core = new ReactionChooserCore<Dummy>(all);
-
         Dummy model = null;
         List<Dummy> candidates = null;
 
@@ -66,4 +71,41 @@ public class ReactionChooserCoreTest
         Assert.That(candidates.Where(d => d == model).Count(), Is.EqualTo(1), "There is more than one correct answer in candidates");
     }
 
+    [Test]
+    public void _03_Incorect_Answer_Returns_False()
+    {
+        Dummy model = null;
+        List<Dummy> candidates = null;
+
+        core.OnNewTable += (m, ns) => {
+            model = m;
+            candidates = ns;
+        };
+
+        core.NewTable(3);
+
+        Dummy answer = candidates[0];
+        if (answer == model)
+            answer = candidates[1];
+
+        Assert.That(core.Answer(answer), Is.False, "Returned value isn't correct");
+    }
+
+    [Test]
+    public void _04_Corect_Answer_Returns_True()
+    {
+        Dummy model = null;
+        List<Dummy> candidates = null;
+
+        core.OnNewTable += (m, ns) => {
+            model = m;
+            candidates = ns;
+        };
+
+        core.NewTable(3);
+
+        Dummy answer = model;
+
+        Assert.That(core.Answer(answer), Is.True, "Returned value isn't correct");
+    }
 }
