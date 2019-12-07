@@ -1,0 +1,18 @@
+{
+    "name": "ReactionGame.Tests.Editor",
+    "references": [
+        "GUID:6f1ecc7a7415a2949a913d53c313a481",
+        "GUID:7f9571992d923ad4e9f010e13fd435a9"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
