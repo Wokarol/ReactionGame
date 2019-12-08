@@ -9,6 +9,7 @@ public class CardController : MonoBehaviour
     [SerializeField] private Color inactiveTint = Color.black * Color.white;
     [Space]
     [SerializeField] private float transitionTime = 0.2f;
+    [SerializeField] private bool fadePattern = true;
     [Header("Binds")]
     [SerializeField] private SpriteColorInjector borderColor;
     [SerializeField] private SpriteColorInjector patternColor;
@@ -26,8 +27,13 @@ public class CardController : MonoBehaviour
     private void Update()
     {
         colorLerp = Mathf.MoveTowards(colorLerp, targetColorLerp, Time.deltaTime * transitionSpeed);
-        borderColor.Tint = patternColor.Tint
-            = Color.Lerp(inactiveTint, normalTint, colorLerp);
+        Color newColor = Color.Lerp(inactiveTint, normalTint, colorLerp);
+        borderColor.Tint = newColor;
+
+        if (fadePattern)
+            newColor.a = colorLerp;
+
+        patternColor.Tint = newColor;
     }
 
     public void SetActive(bool v)
