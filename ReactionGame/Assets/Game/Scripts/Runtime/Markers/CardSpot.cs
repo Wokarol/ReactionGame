@@ -8,23 +8,29 @@ public class CardSpot : MonoBehaviour
     [SerializeField] private float scale = 1;
     [SerializeField] private float positionRange = 0.2f;
     [SerializeField] private float angle = 5;
+    [Space]
+    [SerializeField] private Vector3 startingOffset = Vector2.down * 11;
 
     public float Scale => scale;
     public float PositionRange => positionRange;
-    public Vector3 Position => transform.position;
+    public Vector3 StartingOffset => startingOffset;
 
-    public (Vector3 pos, Quaternion rot, float scale) GetRandom()
+    public (Vector3 pos, float rot, float scale) GetRandom()
     {
         Vector3 randomDirection = Random.insideUnitCircle.normalized;
-        return (randomDirection * PositionRange + Position, Quaternion.Euler(0, 0, Random.Range(-angle, angle)), Scale);
+        return (randomDirection * PositionRange + transform.position, Random.Range(-angle, angle), Scale);
     }
 
     #region GIZMOS STUFF
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.cyan;
+
+        // Main
         Gizmos.DrawWireCube(transform.position, new Vector3(1, 1.48f, 0.1f) * (4 * scale));
+        // Radius
         Gizmos.DrawWireSphere(transform.position, positionRange);
+        // Arc
         float step = 1;
         for (float a = -angle; a < angle; a += step) {
             Gizmos.DrawLine(
@@ -33,6 +39,9 @@ public class CardSpot : MonoBehaviour
         }
         Gizmos.DrawLine(transform.position + Quaternion.Euler(0, 0, -angle) * new Vector2(0, 2), transform.position);
         Gizmos.DrawLine(transform.position + Quaternion.Euler(0, 0, +angle) * new Vector2(0, 2), transform.position);
+        // Starting
+        Gizmos.DrawWireCube(transform.position + startingOffset, new Vector3(1, 1.48f, 0.1f) * (4 * scale));
+        Gizmos.DrawWireCube(transform.position + startingOffset, new Vector3(1.48f, 1, 0.1f) * (4 * scale));
     } 
     #endregion
 }
