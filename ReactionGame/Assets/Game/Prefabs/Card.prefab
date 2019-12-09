@@ -256,6 +256,7 @@ MonoBehaviour:
   fadePattern: 1
   borderColor: {fileID: 6837829110746309547}
   patternColor: {fileID: 4056502079568829472}
+  patternRenderer: {fileID: 3487901902968337916}
   transitionSpeed: 2
 --- !u!1 &3487901903917441157
 GameObject:

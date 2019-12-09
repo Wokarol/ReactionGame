@@ -9,6 +9,7 @@ public class CardGameplayDirector : MonoBehaviour
     [SerializeField] private float modelSpawnDistance = 15;
     [Header("Resources")]
     [SerializeField] private CardController cardPrefab = null;
+    [SerializeField] private List<CardData> CardData = new List<CardData>();
     [Header("Binds")]
     [SerializeField] private CardSpot modelCardSpot = null;
     [SerializeField] private CardSpot[] candidates = new CardSpot[0];
@@ -19,6 +20,8 @@ public class CardGameplayDirector : MonoBehaviour
     private CardController lastCardModel = null;
     private CardController[] candidatesCache = null;
 
+    private Wokarol.GameplayCores.ReactionChooserCore<CardData> core;
+
     private void Awake()
     {
         candidatesCache = new CardController[candidates.Length];
@@ -26,22 +29,30 @@ public class CardGameplayDirector : MonoBehaviour
             CardSpot spot = candidates[i];
             candidatesCache[i] = Instantiate(cardPrefab, spot.transform.position + spot.StartingOffset, Quaternion.Euler(0, 0, Random.Range(-180, 180)));
         }
+
+        core = new Wokarol.GameplayCores.ReactionChooserCore<CardData>(CardData);
+        core.OnNewTable += SpawnCards;
+    }
+
+    private void OnDestroy()
+    {
+        core.OnNewTable -= SpawnCards;
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space)) {
-            SpawnCards();
+            core.NewTable(candidates.Length);
         }
     }
 
     // Add data
-    void SpawnCards()
+    void SpawnCards(CardData modelData, List<CardData> candData)
     {
-        const float modelTime = 1;
-        const float candidatesTime = 0.5f;
+        const float modelTime = 0.5f;
+        const float candidatesTime = 0.3f;
         const float candidatesInterval = 0.15f;
-        const float candidatesTimeCleanup = 0.5f;
+        const float candidatesTimeCleanup = 0.3f;
         const float candidatesIntervalCleanup = 0.1f;
 
         if (animationRunning)
@@ -73,7 +84,7 @@ public class CardGameplayDirector : MonoBehaviour
             seq.AppendCallback(() => c.SetActive(false));
         }
 
-        Transform modelCard = GetModelCard();
+        Transform modelCard = GetModelCard(modelData);
 
         var (modelPos, modelRot, _) = modelCardSpot.GetRandom();
 
@@ -83,14 +94,22 @@ public class CardGameplayDirector : MonoBehaviour
         // Candidates Animation
         for (int i = 0; i < candidates.Length; i++) {
             var spot = candidates[i];
-            var t = candidatesCache[i].transform;
+            CardController card = candidatesCache[i];
+            var t = card.transform;
+            int index = i;
 
             var (pos, rot, _) = spot.GetRandom();
             float delay = modelTime * 0.5f + candidatesInterval * i;
+
             var candSeq = DOTween.Sequence();
+
             candSeq.AppendInterval(delay);
+
+            candSeq.AppendCallback(() => card.SetCard(candData[index]));
+
             candSeq.Append(t.DOMove(pos, candidatesTime));
-            candSeq.Join(t.DORotate(Vector3.forward * rot, candidatesTime));
+            candSeq.Join(t.DORotate(Vector3.forward * rot, candidatesTime, RotateMode.Fast));
+
             seq.Join(candSeq);
         }
         candidatesOnTable = true;
@@ -98,13 +117,14 @@ public class CardGameplayDirector : MonoBehaviour
         seq.AppendCallback(() => animationRunning = false);
     }
 
-    private Transform GetModelCard()
+    private Transform GetModelCard(CardData data)
     {
         var card = Instantiate(
             cardPrefab,
             modelCardSpot.transform.position + (Vector3.down * modelSpawnDistance),
             Quaternion.Euler(0, 0, Random.Range(-180f, 180f)));
         lastCardModel = card;
+        card.SetCard(data);
 
         Transform cardT = card.transform;
         cardT.localScale = Vector3.one * modelCardSpot.Scale;

@@ -13,6 +13,8 @@ public class CardController : MonoBehaviour
     [Header("Binds")]
     [SerializeField] private SpriteColorInjector borderColor = null;
     [SerializeField] private SpriteColorInjector patternColor = null;
+    [Space]
+    [SerializeField] private SpriteRenderer patternRenderer = null;
 
     [SerializeField, HideInInspector] private float transitionSpeed;
 
@@ -44,6 +46,11 @@ public class CardController : MonoBehaviour
     public void SuddenSetActive(bool v)
     {
         targetColorLerp = colorLerp = v ? 1 : 0;
+    }
+
+    public void SetCard(CardData data)
+    {
+        patternRenderer.sprite = data.Pattern;
     }
 
     [ContextMenu("Set Active to TRUE")]

@@ -424,6 +424,17 @@ MonoBehaviour:
   modelSpawnDistance: 11
   cardPrefab: {fileID: 2672944629567602721, guid: 78e6709d5a00a6d419d4d61c01c7a124,
     type: 3}
+  CardData:
+  - {fileID: 11400000, guid: 97e4237155c5b64459e882cc0b19cc24, type: 2}
+  - {fileID: 11400000, guid: e971cfdd45349974e8721e2ed43ad7f6, type: 2}
+  - {fileID: 11400000, guid: 1feb8753b358d384db9224ccbb9aca30, type: 2}
+  - {fileID: 11400000, guid: d97283ea6922d3740bae8a10d8d88f2a, type: 2}
+  - {fileID: 11400000, guid: b768c34e1c4eb4d4695efe7293165ea0, type: 2}
+  - {fileID: 11400000, guid: d85dd25b2c6552940a91f16e15145b87, type: 2}
+  - {fileID: 11400000, guid: f80b889062f05074f87f6242de4458d5, type: 2}
+  - {fileID: 11400000, guid: e8c2050ab3538b241afd739bafad85ce, type: 2}
+  - {fileID: 11400000, guid: ba4b09c57ed295a43b874c36c89a59c1, type: 2}
+  - {fileID: 11400000, guid: 0f531500ef06a2143bb09ec0ce19b2fc, type: 2}
   modelCardSpot: {fileID: 778591080}
   candidates:
   - {fileID: 1326592767}
