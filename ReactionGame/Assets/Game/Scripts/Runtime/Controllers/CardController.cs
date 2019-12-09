@@ -11,8 +11,8 @@ public class CardController : MonoBehaviour
     [SerializeField] private float transitionTime = 0.2f;
     [SerializeField] private bool fadePattern = true;
     [Header("Binds")]
-    [SerializeField] private SpriteColorInjector borderColor;
-    [SerializeField] private SpriteColorInjector patternColor;
+    [SerializeField] private SpriteColorInjector borderColor = null;
+    [SerializeField] private SpriteColorInjector patternColor = null;
 
     [SerializeField, HideInInspector] private float transitionSpeed;
 
