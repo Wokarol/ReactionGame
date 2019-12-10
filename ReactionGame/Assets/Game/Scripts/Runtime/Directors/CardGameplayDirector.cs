@@ -21,6 +21,11 @@ public class CardGameplayDirector : MonoBehaviour
     [BoxGroup(animGroup), SerializeField] private float cardTimeInterval = 0.15f;
     [Header("Correct Card Sequence")]
     [BoxGroup(animGroup), SerializeField] private float correctTimeFlyTime = 0.3f;
+    [Header("Failed Card Sequence")]
+    [BoxGroup(animGroup), SerializeField] private float failShakeDuration = 0.25f;
+    [BoxGroup(animGroup), SerializeField] private float failShakeStrenght = 90;
+    [BoxGroup(animGroup), SerializeField] private int failShakeVibrato = 10;
+    [BoxGroup(animGroup), SerializeField] private float failShakeRandomness = 90;
 
 
     [Header("Resources")]
@@ -114,13 +119,29 @@ public class CardGameplayDirector : MonoBehaviour
             card.position = spot.transform.position + spot.StartingOffset;
             card.localScale = Vector3.one * spot.Scale;
             animationRunning = false;
-            NewTable();
+            callback();
         }
     }
 
     void PlayFailedAnimation(int i, Action callback)
     {
-        Debug.Log("Wrong");
+        CardSpot spot = candidates[i];
+
+        if (animationRunning) {
+            Debug.LogError("Animation started while other one wasn't winished");
+        }
+        animationRunning = true;
+
+        Transform card = candidatesCache[i].transform;
+
+        card.DOShakeRotation(failShakeDuration, Vector3.forward * failShakeStrenght, failShakeVibrato, failShakeRandomness, false)
+            .OnComplete(Complete);
+
+        void Complete()
+        {
+            animationRunning = false;
+            callback();
+        }
     }
 
     void SpawnCards(CardData modelData, List<CardData> candData)
