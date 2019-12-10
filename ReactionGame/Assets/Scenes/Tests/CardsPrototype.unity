@@ -162,7 +162,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 212202509}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.5, y: 4, z: 0}
+  m_LocalPosition: {x: 2.5, y: 4, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -422,6 +422,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   modelSpawnDistance: 11
+  cleanupTimePerCard: 0.3
+  cleanupTimeInterval: 0.1
+  patternTime: 0.5
+  cardTime: 0.3
+  cardTimeInterval: 0.15
+  correctTimeFlyTime: 0.3
   cardPrefab: {fileID: 2672944629567602721, guid: 78e6709d5a00a6d419d4d61c01c7a124,
     type: 3}
   CardData:
@@ -496,7 +502,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1210464806}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.25, y: -3.75, z: 0}
+  m_LocalPosition: {x: 9.25, y: -3.75, z: -6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -573,7 +579,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1326592766}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.5, y: -3.75, z: 0}
+  m_LocalPosition: {x: 2.5, y: -3.75, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -763,7 +769,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2063814264}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.25, y: 4, z: 0}
+  m_LocalPosition: {x: 9.25, y: 4, z: -6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

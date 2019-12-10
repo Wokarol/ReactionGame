@@ -2,11 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System;
+using Random = UnityEngine.Random;
+using NaughtyAttributes;
 
 public class CardGameplayDirector : MonoBehaviour
 {
+    private const string animGroup = "Animation";
+
     [Header("Settings")]
     [SerializeField] private float modelSpawnDistance = 15;
+    [Header("Candidate's Cleanup Sequence")]
+    [BoxGroup(animGroup), SerializeField] private float cleanupTimePerCard = 0.3f;
+    [BoxGroup(animGroup), SerializeField] private float cleanupTimeInterval = 0.1f;
+    [Header("New Table Show Sequence")]
+    [BoxGroup(animGroup), SerializeField] private float patternTime = 0.5f;
+    [BoxGroup(animGroup), SerializeField] private float cardTime = 0.3f;
+    [BoxGroup(animGroup), SerializeField] private float cardTimeInterval = 0.15f;
+    [Header("Correct Card Sequence")]
+    [BoxGroup(animGroup), SerializeField] private float correctTimeFlyTime = 0.3f;
+
+
     [Header("Resources")]
     [SerializeField] private CardController cardPrefab = null;
     [SerializeField] private List<CardData> CardData = new List<CardData>();
@@ -39,25 +55,79 @@ public class CardGameplayDirector : MonoBehaviour
         core.OnNewTable -= SpawnCards;
     }
 
+    private void Start()
+    {
+        NewTable();
+    }
+
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            core.NewTable(candidates.Length);
+        if (Input.GetKeyDown(KeyCode.Alpha1)) {
+            Answer(0);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2)) {
+            Answer(1);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3)) {
+            Answer(2);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha4)) {
+            Answer(3);
         }
     }
 
-    // Add data
+    void Answer(int i)
+    {
+        bool result = core.Answer(i);
+        if (result) {
+            PlayCorrectAnimation(i, NewTable);
+        } else {
+            PlayFailedAnimation(i, NewTable);
+        }
+
+    }
+
+    void NewTable()
+    {
+        core.NewTable(candidates.Length);
+    }
+
+    void PlayCorrectAnimation(int i, Action callback)
+    {
+        CardSpot spot = candidates[i];
+
+        if (animationRunning) {
+            Debug.LogError("Animation started while other one wasn't winished");
+        }
+        animationRunning = true;
+
+        Transform target = lastCardModel.transform;
+        Transform card = candidatesCache[i].transform;
+
+        card.DOMove(target.position, correctTimeFlyTime);
+        card.DORotate(target.eulerAngles, correctTimeFlyTime, RotateMode.Fast);
+        card.DOScale(target.localScale.x, correctTimeFlyTime)
+            .OnComplete(Complete);
+
+        void Complete()
+        {
+            card.position = spot.transform.position + spot.StartingOffset;
+            card.localScale = Vector3.one * spot.Scale;
+            animationRunning = false;
+            NewTable();
+        }
+    }
+
+    void PlayFailedAnimation(int i, Action callback)
+    {
+        Debug.Log("Wrong");
+    }
+
     void SpawnCards(CardData modelData, List<CardData> candData)
     {
-        const float modelTime = 0.5f;
-        const float candidatesTime = 0.3f;
-        const float candidatesInterval = 0.15f;
-        const float candidatesTimeCleanup = 0.3f;
-        const float candidatesIntervalCleanup = 0.1f;
-
-        if (animationRunning)
-            return;
-
+        if (animationRunning) {
+            Debug.LogError("Animation started while other one wasn't winished");
+        }
         animationRunning = true;
 
         var seq = DOTween.Sequence();
@@ -68,11 +138,11 @@ public class CardGameplayDirector : MonoBehaviour
                 var spot = candidates[i];
                 var t = candidatesCache[i].transform;
 
-                float delay = candidatesIntervalCleanup * i;
+                float delay = cleanupTimeInterval * i;
                 var candSeq = DOTween.Sequence();
                 candSeq.AppendInterval(delay);
-                candSeq.Append(t.DOMove(spot.transform.position + spot.StartingOffset, candidatesTimeCleanup));
-                candSeq.Join(t.DORotate(Vector3.forward * Random.Range(-180, 180), candidatesTimeCleanup, RotateMode.Fast));
+                candSeq.Append(t.DOMove(spot.transform.position + spot.StartingOffset, cleanupTimePerCard));
+                candSeq.Join(t.DORotate(Vector3.forward * Random.Range(-180, 180), cleanupTimePerCard, RotateMode.Fast));
                 cleanupSequence.Join(candSeq);
             }
             seq.Append(cleanupSequence);
@@ -88,8 +158,8 @@ public class CardGameplayDirector : MonoBehaviour
 
         var (modelPos, modelRot, _) = modelCardSpot.GetRandom();
 
-        seq.Append(modelCard.DOMove(modelPos, modelTime));
-        seq.Join(modelCard.DORotate(Vector3.forward * modelRot, modelTime));
+        seq.Append(modelCard.DOMove(modelPos, patternTime));
+        seq.Join(modelCard.DORotate(Vector3.forward * modelRot, patternTime));
 
         // Candidates Animation
         for (int i = 0; i < candidates.Length; i++) {
@@ -99,7 +169,7 @@ public class CardGameplayDirector : MonoBehaviour
             int index = i;
 
             var (pos, rot, _) = spot.GetRandom();
-            float delay = modelTime * 0.5f + candidatesInterval * i;
+            float delay = patternTime * 0.5f + cardTimeInterval * i;
 
             var candSeq = DOTween.Sequence();
 
@@ -107,8 +177,8 @@ public class CardGameplayDirector : MonoBehaviour
 
             candSeq.AppendCallback(() => card.SetCard(candData[index]));
 
-            candSeq.Append(t.DOMove(pos, candidatesTime));
-            candSeq.Join(t.DORotate(Vector3.forward * rot, candidatesTime, RotateMode.Fast));
+            candSeq.Append(t.DOMove(pos, cardTime));
+            candSeq.Join(t.DORotate(Vector3.forward * rot, cardTime, RotateMode.Fast));
 
             seq.Join(candSeq);
         }

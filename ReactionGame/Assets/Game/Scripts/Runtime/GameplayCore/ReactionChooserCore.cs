@@ -41,5 +41,10 @@ namespace Wokarol.GameplayCores
         {
             return answer == model;
         }
+
+        public bool Answer(int answer)
+        {
+            return candidates[answer] == model;
+        }
     }
 }
