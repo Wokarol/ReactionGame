@@ -38,6 +38,11 @@ public class CardGameplayDirector : MonoBehaviour
     // Animation State
     private bool animationRunning = false;
     private bool candidatesOnTable = false;
+    private bool takesAnswer = true;
+    private bool queuesAnswer = false;
+
+    private int queuedAnswer = -1;
+
     private CardController lastCardModel = null;
     private CardController[] candidatesCache = null;
 
@@ -67,6 +72,11 @@ public class CardGameplayDirector : MonoBehaviour
 
     void Update()
     {
+        if(!animationRunning && queuedAnswer != -1) {
+            Answer(queuedAnswer);
+            queuedAnswer = -1;
+        }
+
         if (Input.GetKeyDown(KeyCode.Alpha1)) {
             Answer(0);
         }
@@ -83,13 +93,20 @@ public class CardGameplayDirector : MonoBehaviour
 
     void Answer(int i)
     {
-        bool result = core.Answer(i);
-        if (result) {
-            PlayCorrectAnimation(i, NewTable);
-        } else {
-            PlayFailedAnimation(i, NewTable);
-        }
+        if (takesAnswer) {
+            takesAnswer = queuesAnswer = false;
 
+            bool result = core.Answer(i);
+            if (result) {
+                PlayCorrectAnimation(i, NewTable);
+            } else {
+                PlayFailedAnimation(i, NewTable);
+            }
+        } else if(queuesAnswer) {
+            Debug.Log("Queued!!!");
+            queuesAnswer = false;
+            queuedAnswer = i;
+        }
     }
 
     void NewTable()
@@ -153,6 +170,7 @@ public class CardGameplayDirector : MonoBehaviour
 
         var seq = DOTween.Sequence();
 
+        // Cleans up candidates if needed
         if (candidatesOnTable) {
             var cleanupSequence = DOTween.Sequence();
             for (int i = 0; i < candidates.Length; i++) {
@@ -168,6 +186,8 @@ public class CardGameplayDirector : MonoBehaviour
             }
             seq.Append(cleanupSequence);
         }
+
+        seq.AppendCallback(() => queuesAnswer = true);
 
         // Model Animation
         if (lastCardModel) {
@@ -205,7 +225,10 @@ public class CardGameplayDirector : MonoBehaviour
         }
         candidatesOnTable = true;
 
-        seq.AppendCallback(() => animationRunning = false);
+        seq.AppendCallback(() => {
+            animationRunning = false;
+            takesAnswer = true;
+        });
     }
 
     private Transform GetModelCard(CardData data)
