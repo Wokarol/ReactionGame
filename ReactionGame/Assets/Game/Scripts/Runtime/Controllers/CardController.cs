@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class CardController : MonoBehaviour
+public class CardController : MonoBehaviour, IPointerClickHandler
 {
     [Header("Settings")]
     [SerializeField] private Color normalTint = Color.white;
@@ -20,6 +22,8 @@ public class CardController : MonoBehaviour
 
     private float colorLerp = 1;
     private float targetColorLerp = 1;
+
+    public event Action OnClicked;
 
     private void OnValidate()
     {
@@ -51,6 +55,11 @@ public class CardController : MonoBehaviour
     public void SetCard(CardData data)
     {
         patternRenderer.sprite = data.Pattern;
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        OnClicked?.Invoke();
     }
 
     [ContextMenu("Set Active to TRUE")]

@@ -52,8 +52,10 @@ public class CardGameplayDirector : MonoBehaviour
     {
         candidatesCache = new CardController[candidates.Length];
         for (int i = 0; i < candidatesCache.Length; i++) {
+            int index = i;
             CardSpot spot = candidates[i];
             candidatesCache[i] = Instantiate(cardPrefab, spot.transform.position + spot.StartingOffset, Quaternion.Euler(0, 0, Random.Range(-180, 180)));
+            candidatesCache[i].OnClicked += () => Answer(index);
         }
 
         core = new Wokarol.GameplayCores.ReactionChooserCore<CardData>(CardData);
@@ -75,19 +77,6 @@ public class CardGameplayDirector : MonoBehaviour
         if(!animationRunning && queuedAnswer != -1) {
             Answer(queuedAnswer);
             queuedAnswer = -1;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha1)) {
-            Answer(0);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2)) {
-            Answer(1);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3)) {
-            Answer(2);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha4)) {
-            Answer(3);
         }
     }
 
