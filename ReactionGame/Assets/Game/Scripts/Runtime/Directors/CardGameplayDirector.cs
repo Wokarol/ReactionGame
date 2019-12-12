@@ -12,6 +12,8 @@ public class CardGameplayDirector : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField] private float modelSpawnDistance = 15;
+
+    [BoxGroup(animGroup), SerializeField] private float animationScale = 1;
     [Header("Candidate's Cleanup Sequence")]
     [BoxGroup(animGroup), SerializeField] private float cleanupTimePerCard = 0.3f;
     [BoxGroup(animGroup), SerializeField] private float cleanupTimeInterval = 0.1f;
@@ -115,9 +117,11 @@ public class CardGameplayDirector : MonoBehaviour
         Transform target = lastCardModel.transform;
         Transform card = candidatesCache[i].transform;
 
-        card.DOMove(target.position, correctTimeFlyTime);
-        card.DORotate(target.eulerAngles, correctTimeFlyTime, RotateMode.Fast);
-        card.DOScale(target.localScale.x, correctTimeFlyTime)
+        float flyTime = correctTimeFlyTime * animationScale;
+
+        card.DOMove(target.position, flyTime);
+        card.DORotate(target.eulerAngles, flyTime, RotateMode.Fast);
+        card.DOScale(target.localScale.x, flyTime)
             .OnComplete(Complete);
 
         void Complete()
@@ -140,7 +144,7 @@ public class CardGameplayDirector : MonoBehaviour
 
         Transform card = candidatesCache[i].transform;
 
-        card.DOShakeRotation(failShakeDuration, Vector3.forward * failShakeStrenght, failShakeVibrato, failShakeRandomness, false)
+        card.DOShakeRotation(failShakeDuration * animationScale, Vector3.forward * failShakeStrenght, failShakeVibrato, failShakeRandomness, false)
             .OnComplete(Complete);
 
         void Complete()
@@ -166,11 +170,11 @@ public class CardGameplayDirector : MonoBehaviour
                 var spot = candidates[i];
                 var t = candidatesCache[i].transform;
 
-                float delay = cleanupTimeInterval * i;
+                float delay = cleanupTimeInterval * i * animationScale;
                 var candSeq = DOTween.Sequence();
                 candSeq.AppendInterval(delay);
-                candSeq.Append(t.DOMove(spot.transform.position + spot.StartingOffset, cleanupTimePerCard));
-                candSeq.Join(t.DORotate(Vector3.forward * Random.Range(-180, 180), cleanupTimePerCard, RotateMode.Fast));
+                candSeq.Append(t.DOMove(spot.transform.position + spot.StartingOffset, cleanupTimePerCard * animationScale));
+                candSeq.Join(t.DORotate(Vector3.forward * Random.Range(-180, 180), cleanupTimePerCard * animationScale, RotateMode.Fast));
                 cleanupSequence.Join(candSeq);
             }
             seq.Append(cleanupSequence);
@@ -188,8 +192,8 @@ public class CardGameplayDirector : MonoBehaviour
 
         var (modelPos, modelRot, _) = modelCardSpot.GetRandom();
 
-        seq.Append(modelCard.DOMove(modelPos, patternTime));
-        seq.Join(modelCard.DORotate(Vector3.forward * modelRot, patternTime));
+        seq.Append(modelCard.DOMove(modelPos, patternTime * animationScale));
+        seq.Join(modelCard.DORotate(Vector3.forward * modelRot, patternTime * animationScale));
 
         // Candidates Animation
         for (int i = 0; i < candidates.Length; i++) {
@@ -199,7 +203,7 @@ public class CardGameplayDirector : MonoBehaviour
             int index = i;
 
             var (pos, rot, _) = spot.GetRandom();
-            float delay = patternTime * 0.5f + cardTimeInterval * i;
+            float delay = (patternTime * 0.5f + cardTimeInterval * i) * animationScale;
 
             var candSeq = DOTween.Sequence();
 
@@ -207,8 +211,8 @@ public class CardGameplayDirector : MonoBehaviour
 
             candSeq.AppendCallback(() => card.SetCard(candData[index]));
 
-            candSeq.Append(t.DOMove(pos, cardTime));
-            candSeq.Join(t.DORotate(Vector3.forward * rot, cardTime, RotateMode.Fast));
+            candSeq.Append(t.DOMove(pos, cardTime * animationScale));
+            candSeq.Join(t.DORotate(Vector3.forward * rot, cardTime * animationScale, RotateMode.Fast));
 
             seq.Join(candSeq);
         }

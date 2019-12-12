@@ -422,6 +422,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   modelSpawnDistance: 11
+  animationScale: 0.3
   cleanupTimePerCard: 0.3
   cleanupTimeInterval: 0.1
   patternTime: 0.5
