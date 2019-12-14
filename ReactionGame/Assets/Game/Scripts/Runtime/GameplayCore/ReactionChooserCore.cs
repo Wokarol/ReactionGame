@@ -15,8 +15,8 @@ namespace Wokarol.GameplayCores
         private List<CardT> all;
 
         // TableData
-        private List<CardT> candidates = new List<CardT>();
-        private CardT model;
+        public List<CardT> Candidates { get; private set; } = new List<CardT>();
+        public CardT Model { get; private set; }
 
         public ReactionChooserCore(List<CardT> allCards)
         {
@@ -25,26 +25,26 @@ namespace Wokarol.GameplayCores
 
         public void NewTable(int count)
         {
-            candidates.Clear();
+            Candidates.Clear();
             all.Shuffle();
 
-            model = all[0];
+            Model = all[0];
             for (int i = 0; i < count; i++) {
-                candidates.Add(all[i]);
+                Candidates.Add(all[i]);
             }
-            candidates.Shuffle();
+            Candidates.Shuffle();
 
-            OnNewTable?.Invoke(model, candidates);
+            OnNewTable?.Invoke(Model, Candidates);
         }
 
         public bool Answer(CardT answer)
         {
-            return answer == model;
+            return answer == Model;
         }
 
         public bool Answer(int answer)
         {
-            return candidates[answer] == model;
+            return Candidates[answer] == Model;
         }
     }
 }

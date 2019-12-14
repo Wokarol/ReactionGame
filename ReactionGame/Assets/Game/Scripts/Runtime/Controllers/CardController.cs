@@ -3,14 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
+using DG.Tweening;
+using NaughtyAttributes;
 
+[RequireComponent(typeof(SortingGroup))]
 public class CardController : MonoBehaviour, IPointerClickHandler
 {
     [Header("Settings")]
     [SerializeField] private Color normalTint = Color.white;
     [SerializeField] private Color inactiveTint = Color.black * Color.white;
     [Space]
-    [SerializeField] private float transitionTime = 0.2f;
+    [SerializeField] private float fadeIntoBackTime = 0.2f;
+    [SerializeField] private float fadeOutTime = 0.2f;
     [SerializeField] private bool fadePattern = true;
     [Header("Binds")]
     [SerializeField] private SpriteColorInjector borderColor = null;
@@ -18,38 +23,22 @@ public class CardController : MonoBehaviour, IPointerClickHandler
     [Space]
     [SerializeField] private SpriteRenderer patternRenderer = null;
 
-    [SerializeField, HideInInspector] private float transitionSpeed;
-
-    private float colorLerp = 1;
-    private float targetColorLerp = 1;
+    private SortingGroup sortingGroup = null;
 
     public event Action OnClicked;
-
-    private void OnValidate()
-    {
-        transitionSpeed = 1 / transitionTime;
+    public int SoringOrder {
+        get => sortingGroup
+                ? sortingGroup.sortingOrder
+                : 0;
+        set {
+            if (sortingGroup)
+                sortingGroup.sortingOrder = value;
+        }
     }
 
-    private void Update()
+    private void Awake()
     {
-        colorLerp = Mathf.MoveTowards(colorLerp, targetColorLerp, Time.deltaTime * transitionSpeed);
-        Color newColor = Color.Lerp(inactiveTint, normalTint, colorLerp);
-        borderColor.Tint = newColor;
-
-        if (fadePattern)
-            newColor.a = colorLerp;
-
-        patternColor.Tint = newColor;
-    }
-
-    public void SetActive(bool v)
-    {
-        targetColorLerp = v ? 1 : 0;
-    }
-
-    public void SuddenSetActive(bool v)
-    {
-        targetColorLerp = colorLerp = v ? 1 : 0;
+        sortingGroup = GetComponent<SortingGroup>();
     }
 
     public void SetCard(CardData data)
@@ -62,8 +51,28 @@ public class CardController : MonoBehaviour, IPointerClickHandler
         OnClicked?.Invoke();
     }
 
-    [ContextMenu("Set Active to TRUE")]
-    private void SetActiveToTrue() => SetActive(true);
-    [ContextMenu("Set Active to FALSE")]
-    private void SetActiveToFalse() => SetActive(false);
+    [Button("Reset fade", ButtonAttribute.EnableMode.Playmode)]
+    public void ResetFade()
+    {
+        borderColor.Tint = normalTint;
+        patternColor.Tint = normalTint;
+    }
+
+    [Button("Fade into back", ButtonAttribute.EnableMode.Playmode)]
+    public void FadeIntoBack(float scale = 1)
+    {
+        borderColor.DOTint(inactiveTint, fadeIntoBackTime * scale);
+
+        Color targetPatternTint = inactiveTint;
+        if (fadePattern)
+            targetPatternTint.a = 0;
+        patternColor.DOTint(targetPatternTint, fadeIntoBackTime * scale);
+    }
+
+    [Button("Fade out", ButtonAttribute.EnableMode.Playmode)]
+    public void FadeOut(float scale = 1)
+    {
+        borderColor.DOAlpha(0, fadeOutTime * scale);
+        patternColor.DOAlpha(0, fadeOutTime * scale);
+    }
 }

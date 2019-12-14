@@ -253,12 +253,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   normalTint: {r: 1, g: 1, b: 1, a: 1}
   inactiveTint: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  transitionTime: 0.5
+  fadeIntoBackTime: 0.2
+  fadeOutTime: 0.2
   fadePattern: 1
   borderColor: {fileID: 6837829110746309547}
   patternColor: {fileID: 4056502079568829472}
   patternRenderer: {fileID: 3487901902968337916}
-  transitionSpeed: 2
 --- !u!61 &7355554593277415390
 BoxCollider2D:
   m_ObjectHideFlags: 0

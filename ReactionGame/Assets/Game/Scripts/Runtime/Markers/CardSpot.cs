@@ -10,10 +10,13 @@ public class CardSpot : MonoBehaviour
     [SerializeField] private float angle = 5;
     [Space]
     [SerializeField] private Vector3 startingOffset = Vector2.down * 11;
+    [Space]
+    [SerializeField] private int sortingOrder = 0;
 
     public float Scale => scale;
     public float PositionRange => positionRange;
     public Vector3 StartingOffset => startingOffset;
+    public int SortingOrder => sortingOrder;
 
     public (Vector3 pos, float rot, float scale) GetRandom()
     {

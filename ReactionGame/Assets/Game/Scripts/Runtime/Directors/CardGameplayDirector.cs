@@ -12,6 +12,7 @@ public class CardGameplayDirector : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField] private float modelSpawnDistance = 15;
+    [SerializeField, Range(1, 20)] private int maxVisibleCards = 5;
 
     [BoxGroup(animGroup), SerializeField] private float animationScale = 1;
     [Header("Candidate's Cleanup Sequence")]
@@ -37,6 +38,12 @@ public class CardGameplayDirector : MonoBehaviour
     [SerializeField] private CardSpot modelCardSpot = null;
     [SerializeField] private CardSpot[] candidates = new CardSpot[0];
 
+    enum DebugAutoAnswerTypes { Correct, Wrong, Random }
+
+    [Header("Debug Options")]
+    [SerializeField] private bool autoAnswer = false;
+    [SerializeField] private DebugAutoAnswerTypes autoAnswerType = DebugAutoAnswerTypes.Random;
+
     // Animation State
     private bool animationRunning = false;
     private bool candidatesOnTable = false;
@@ -45,19 +52,27 @@ public class CardGameplayDirector : MonoBehaviour
 
     private int queuedAnswer = -1;
 
-    private CardController lastCardModel = null;
+    private CardController lastModelCard;
+    private Queue<CardController> modelCardQueue;
+    private List<CardController> modelCardsList;
     private CardController[] candidatesCache = null;
 
     private Wokarol.GameplayCores.ReactionChooserCore<CardData> core;
 
     private void Awake()
     {
+        modelCardQueue = new Queue<CardController>(maxVisibleCards);
+        modelCardsList = new List<CardController>(maxVisibleCards);
+
         candidatesCache = new CardController[candidates.Length];
         for (int i = 0; i < candidatesCache.Length; i++) {
             int index = i;
             CardSpot spot = candidates[i];
-            candidatesCache[i] = Instantiate(cardPrefab, spot.transform.position + spot.StartingOffset, Quaternion.Euler(0, 0, Random.Range(-180, 180)));
-            candidatesCache[i].OnClicked += () => Answer(index);
+            CardController card = Instantiate(cardPrefab, spot.transform.position + spot.StartingOffset, Quaternion.Euler(0, 0, Random.Range(-180, 180)));
+            candidatesCache[i] = card;
+
+            card.OnClicked += () => Answer(index);
+            card.SoringOrder = spot.SortingOrder;
         }
 
         core = new Wokarol.GameplayCores.ReactionChooserCore<CardData>(CardData);
@@ -76,7 +91,26 @@ public class CardGameplayDirector : MonoBehaviour
 
     void Update()
     {
-        if(!animationRunning && queuedAnswer != -1) {
+#if UNITY_EDITOR
+        if (autoAnswer && takesAnswer) {
+            switch (autoAnswerType) {
+                case DebugAutoAnswerTypes.Correct:
+                    AnswerCorrect();
+                    break;
+                case DebugAutoAnswerTypes.Wrong:
+                    AnswerWrong();
+                    break;
+                case DebugAutoAnswerTypes.Random:
+                    if (Random.value > 0.5f)
+                        AnswerCorrect();
+                    else
+                        AnswerWrong();
+                    break;
+            }
+        } 
+#endif
+
+        if (!animationRunning && queuedAnswer != -1) {
             Answer(queuedAnswer);
             queuedAnswer = -1;
         }
@@ -114,7 +148,7 @@ public class CardGameplayDirector : MonoBehaviour
         }
         animationRunning = true;
 
-        Transform target = lastCardModel.transform;
+        Transform target = lastModelCard.transform;
         Transform card = candidatesCache[i].transform;
 
         float flyTime = correctTimeFlyTime * animationScale;
@@ -183,9 +217,9 @@ public class CardGameplayDirector : MonoBehaviour
         seq.AppendCallback(() => queuesAnswer = true);
 
         // Model Animation
-        if (lastCardModel) {
-            var c = lastCardModel;
-            seq.AppendCallback(() => c.SetActive(false));
+        if (lastModelCard) {
+            var c = lastModelCard;
+            seq.AppendCallback(() => c.FadeIntoBack());
         }
 
         Transform modelCard = GetModelCard(modelData);
@@ -226,15 +260,59 @@ public class CardGameplayDirector : MonoBehaviour
 
     private Transform GetModelCard(CardData data)
     {
-        var card = Instantiate(
-            cardPrefab,
-            modelCardSpot.transform.position + (Vector3.down * modelSpawnDistance),
-            Quaternion.Euler(0, 0, Random.Range(-180f, 180f)));
-        lastCardModel = card;
+        CardController card = null;
+        if (modelCardsList.Count < maxVisibleCards) {
+            card = Instantiate(
+                cardPrefab,
+                modelCardSpot.transform.position + (Vector3.down * modelSpawnDistance),
+                Quaternion.Euler(0, 0, Random.Range(-180f, 180f)));
+            modelCardsList.Add(card);
+        } else {
+            card = modelCardQueue.Dequeue();
+            card.ResetFade();
+            card.transform.SetPositionAndRotation(
+                modelCardSpot.transform.position + (Vector3.down * modelSpawnDistance), 
+                Quaternion.Euler(0, 0, Random.Range(-180f, 180f)));
+            
+            foreach (var c in modelCardsList) {
+                c.SoringOrder -= 1;
+            }
+
+            card.SoringOrder = 0;
+        }
+        modelCardQueue.Enqueue(card);
+        lastModelCard = card;
         card.SetCard(data);
+
+        if(modelCardsList.Count >= maxVisibleCards) {
+            modelCardQueue.Peek().FadeOut(animationScale);
+        }
 
         Transform cardT = card.transform;
         cardT.localScale = Vector3.one * modelCardSpot.Scale;
         return cardT;
+    }
+
+
+    // Helper Methods
+    [Button("Answer Correct", ButtonAttribute.EnableMode.Playmode)]
+    private void AnswerCorrect()
+    {
+        for (int i = 0; i < core.Candidates.Count; i++) {
+            if(core.Candidates[i] == core.Model) {
+                Answer(i);
+                return;
+            }
+        }
+    }
+
+    [Button("Answer Wrong", ButtonAttribute.EnableMode.Playmode)]
+    private void AnswerWrong()
+    {
+        if(core.Candidates[0] != core.Model) {
+            Answer(0);
+        } else {
+            Answer(1);
+        }
     }
 }
