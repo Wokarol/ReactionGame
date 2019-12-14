@@ -486,7 +486,7 @@ MonoBehaviour:
   - {fileID: 2063814265}
   - {fileID: 212202510}
   autoAnswer: 0
-  autoAnswerType: 2
+  autoAnswerType: 3
 --- !u!4 &1005595495
 Transform:
   m_ObjectHideFlags: 0

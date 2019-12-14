@@ -38,11 +38,11 @@ public class CardGameplayDirector : MonoBehaviour
     [SerializeField] private CardSpot modelCardSpot = null;
     [SerializeField] private CardSpot[] candidates = new CardSpot[0];
 
-    enum DebugAutoAnswerTypes { Correct, Wrong, Random }
+    enum DebugAutoAnswerTypes { Correct, Wrong, FiftyFifty, Random }
 
     [Header("Debug Options")]
     [SerializeField] private bool autoAnswer = false;
-    [SerializeField] private DebugAutoAnswerTypes autoAnswerType = DebugAutoAnswerTypes.Random;
+    [SerializeField] private DebugAutoAnswerTypes autoAnswerType = DebugAutoAnswerTypes.FiftyFifty;
 
     // Animation State
     private bool animationRunning = false;
@@ -103,11 +103,14 @@ public class CardGameplayDirector : MonoBehaviour
                 case DebugAutoAnswerTypes.Wrong:
                     AnswerWrong();
                     break;
-                case DebugAutoAnswerTypes.Random:
+                case DebugAutoAnswerTypes.FiftyFifty:
                     if (Random.value > 0.5f)
                         AnswerCorrect();
                     else
                         AnswerWrong();
+                    break;
+                case DebugAutoAnswerTypes.Random:
+                    Answer(Random.Range(0, candidatesCache.Length));
                     break;
             }
         } 
