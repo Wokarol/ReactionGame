@@ -69,6 +69,9 @@ public class CardGameplayDirector : MonoBehaviour
             int index = i;
             CardSpot spot = candidates[i];
             CardController card = Instantiate(cardPrefab, spot.transform.position + spot.StartingOffset, Quaternion.Euler(0, 0, Random.Range(-180, 180)));
+            if (Application.isEditor)
+                card.gameObject.name = $"{cardPrefab.name} Candidate [{i}]";
+
             candidatesCache[i] = card;
 
             card.OnClicked += () => Answer(index);
@@ -266,6 +269,8 @@ public class CardGameplayDirector : MonoBehaviour
                 cardPrefab,
                 modelCardSpot.transform.position + (Vector3.down * modelSpawnDistance),
                 Quaternion.Euler(0, 0, Random.Range(-180f, 180f)));
+            if(Application.isEditor)
+                card.gameObject.name = $"{cardPrefab.name} Model [{modelCardsList.Count}]";
             modelCardsList.Add(card);
         } else {
             card = modelCardQueue.Dequeue();
