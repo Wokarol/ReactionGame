@@ -97,6 +97,7 @@ public class CardGameplayDirector : MonoBehaviour
 
     void Update()
     {
+        #region AUTO_ANSWER
 #if UNITY_EDITOR
         if (autoAnswer && takesAnswer) {
             switch (autoAnswerType) {
@@ -116,8 +117,9 @@ public class CardGameplayDirector : MonoBehaviour
                     Answer(Random.Range(0, candidatesCache.Length));
                     break;
             }
-        } 
+        }  
 #endif
+        #endregion
 
         if (!animationRunning && queuedAnswer != -1) {
             Answer(queuedAnswer);

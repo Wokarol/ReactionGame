@@ -9,6 +9,7 @@ public class ScoreController : MonoBehaviour
 {
     [Tooltip("Score (Y) based on reaction time in ms (X)")]
     [SerializeField] private AnimationCurve scoreByTime = AnimationCurve.Linear(200, 150, 1000, 20);
+    [SerializeField] private AnimationCurve timeScaleByScore = AnimationCurve.Linear(0, 1, 10000, 3);
     [SerializeField] private int scoreRounding = 10;
 
     private float startTime;
@@ -16,6 +17,16 @@ public class ScoreController : MonoBehaviour
     public event Action<int> PointsChanged;
     public int Score { get; private set; } = 0;
 
+    private void Awake()
+    {
+        Time.timeScale = 1;
+    }
+
+
+    private void Update()
+    {
+        Time.timeScale = timeScaleByScore.Evaluate(Score);
+    }
     private void OnEnable()
     {
         Messenger m = Messenger.Default;

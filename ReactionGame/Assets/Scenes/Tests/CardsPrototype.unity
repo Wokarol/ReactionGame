@@ -717,6 +717,39 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  timeScaleByScore:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 6975.771
+      value: 2.010687
+      inSlope: 0.0003794299
+      outSlope: 0.0003794299
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.049999792
+      outWeight: 0.30039567
+    - serializedVersion: 3
+      time: 19951.482
+      value: 4.011816
+      inSlope: -0.000004946925
+      outSlope: -0.000004946925
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.13519205
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   scoreRounding: 10
 --- !u!1 &498263533
 GameObject:
@@ -1276,8 +1309,8 @@ MonoBehaviour:
   - {fileID: 1210464807}
   - {fileID: 2063814265}
   - {fileID: 212202510}
-  autoAnswer: 0
-  autoAnswerType: 3
+  autoAnswer: 1
+  autoAnswerType: 0
 --- !u!4 &1005595495
 Transform:
   m_ObjectHideFlags: 0
@@ -1512,7 +1545,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scoreFormat: 0 000 000
-  deltaFormat: + 0 000
+  deltaFormat: + 000
   display: {fileID: 312715408}
   deltaDisplay: {fileID: 807593879}
   scoreController: {fileID: 406299425}
