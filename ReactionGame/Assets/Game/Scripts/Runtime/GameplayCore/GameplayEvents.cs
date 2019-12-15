@@ -11,4 +11,9 @@
     {
 
     }
+
+    public struct SubtractHP
+    {
+
+    }
 }

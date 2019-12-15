@@ -41,6 +41,11 @@ namespace Wokarol.GameplayCores
         {
             bool result = answer == Model;
             Messenger.Default.SendMessage(new GameplayEvents.Answered(result));
+
+            if (!result) {
+                Messenger.Default.SendMessage(new GameplayEvents.SubtractHP());
+            }
+
             return result;
         }
 
