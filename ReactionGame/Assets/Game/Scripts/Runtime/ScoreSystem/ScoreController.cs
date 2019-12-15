@@ -7,8 +7,14 @@ using Wokarol.MessageSystem;
 
 public class ScoreController : MonoBehaviour
 {
-    private int score;
+    [Tooltip("Score (Y) based on reaction time in ms (X)")]
+    [SerializeField] private AnimationCurve scoreByTime = AnimationCurve.Linear(200, 150, 1000, 20);
+    [SerializeField] private int scoreRounding = 10;
+
     private float startTime;
+
+    public event Action<int> PointsChanged;
+    public int Score { get; private set; } = 0;
 
     private void OnEnable()
     {
@@ -30,10 +36,12 @@ public class ScoreController : MonoBehaviour
     private void OnAnswered(Answered e)
     {
         if (e.Correct) {
-            score += 1;
-        }
-        float reactionTime = Time.time - startTime;
+            float reactionTime = (Time.time - startTime) * 1000;
+            float rawScore = scoreByTime.Evaluate(reactionTime);
 
-        Debug.Log($"Score = {score} with time of {reactionTime}");
+            int gainedPoints = Mathf.CeilToInt(rawScore / scoreRounding) * scoreRounding;
+            Score += gainedPoints;
+            PointsChanged?.Invoke(gainedPoints);
+        }
     }
 }
