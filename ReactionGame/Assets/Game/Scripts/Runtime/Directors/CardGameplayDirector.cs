@@ -5,6 +5,7 @@ using DG.Tweening;
 using System;
 using Random = UnityEngine.Random;
 using NaughtyAttributes;
+using Wokarol.MessageSystem;
 
 public class CardGameplayDirector : MonoBehaviour
 {
@@ -261,6 +262,7 @@ public class CardGameplayDirector : MonoBehaviour
         seq.AppendCallback(() => {
             animationRunning = false;
             takesAnswer = true;
+            Messenger.Default.SendMessage(new GameplayEvents.TableReady());
         });
     }
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using Wokarol.MessageSystem;
 using Wokarol.StateMachineSystem;
 
 namespace Wokarol.GameplayCores
@@ -39,12 +39,14 @@ namespace Wokarol.GameplayCores
 
         public bool Answer(CardT answer)
         {
-            return answer == Model;
+            bool result = answer == Model;
+            Messenger.Default.SendMessage(new GameplayEvents.Answered(result));
+            return result;
         }
 
         public bool Answer(int answer)
         {
-            return Candidates[answer] == Model;
+            return Answer(Candidates[answer]);
         }
     }
 }
