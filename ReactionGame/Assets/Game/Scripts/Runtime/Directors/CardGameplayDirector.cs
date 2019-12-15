@@ -86,6 +86,7 @@ public class CardGameplayDirector : MonoBehaviour
 
     private void OnDestroy()
     {
+        core.Dispose();
         core.OnNewTable -= SpawnCards;
     }
 
@@ -198,6 +199,9 @@ public class CardGameplayDirector : MonoBehaviour
 
     void SpawnCards(CardData modelData, List<CardData> candData)
     {
+        takesAnswer = false;
+        queuesAnswer = false;
+
         if (animationRunning) {
             Debug.LogError("Animation started while other one wasn't winished");
         }

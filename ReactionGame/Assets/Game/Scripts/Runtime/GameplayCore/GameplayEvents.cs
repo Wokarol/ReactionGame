@@ -12,7 +12,12 @@
 
     }
 
-    public struct SubtractHP
+    public struct LiveLost
+    {
+
+    }
+
+    public struct DeathTimePassed
     {
 
     }

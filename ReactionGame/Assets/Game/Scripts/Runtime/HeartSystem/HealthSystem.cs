@@ -20,7 +20,7 @@ public class HealthSystem : MonoBehaviour
 
     private void OnEnable()
     {
-        Messenger.Default.AddListener<GameplayEvents.SubtractHP>(_ => SubtractHP());
+        Messenger.Default.AddListener<GameplayEvents.LiveLost>(_ => SubtractHP());
     }
     private void OnDisable()
     {
