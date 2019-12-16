@@ -22,11 +22,6 @@ public class ScoreController : MonoBehaviour
         Time.timeScale = 1;
     }
 
-
-    private void Update()
-    {
-        Time.timeScale = timeScaleByScore.Evaluate(Score);
-    }
     private void OnEnable()
     {
         Messenger m = Messenger.Default;
@@ -54,5 +49,7 @@ public class ScoreController : MonoBehaviour
             Score += gainedPoints;
             PointsChanged?.Invoke(gainedPoints);
         }
+
+        Time.timeScale = timeScaleByScore.Evaluate(Score);
     }
 }

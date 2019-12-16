@@ -1,4 +1,5 @@
-﻿using NaughtyAttributes;
+﻿using DG.Tweening;
+using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,7 +35,14 @@ public class HealthSystem : MonoBehaviour
         CurrentHealth -= 1;
         HealthChanged?.Invoke();
 
-        if(CurrentHealth == 0) {
+        var seq = DOTween.Sequence();
+        seq.Append(DOVirtual.Float(Time.timeScale, 0.2f, 0.2f, v => Time.timeScale = v));
+        seq.AppendInterval(0.2f);
+        seq.Append(DOVirtual.Float(0.2f, Time.timeScale, 0.1f, v => Time.timeScale = v));
+
+        seq.SetUpdate(true);
+
+        if (CurrentHealth == 0) {
             Messenger.Default.SendMessage(new GameplayEvents.GameOver());
         }
     }
