@@ -15,10 +15,18 @@ public class DeathCounter : MonoBehaviour
     private bool wasTriggered = false;
     private float startTime;
 
+    private bool gameActive = true;
+
     private void OnEnable()
     {
         Messenger.Default.AddListener<GameplayEvents.TableReady>(_ => StartTimer());
         Messenger.Default.AddListener<GameplayEvents.Answered>(_ => ClearTimer());
+        Messenger.Default.AddListener<GameplayEvents.GameOver>(e => gameActive = false);
+    }
+
+    private void OnDisable()
+    {
+        Messenger.Default.RemoveAllListenersFor(this);
     }
 
     private void Start()
@@ -28,7 +36,7 @@ public class DeathCounter : MonoBehaviour
 
     private void Update()
     {
-        if (!timerActive)
+        if (!timerActive || !gameActive)
             return;
 
         float timePassed = (Time.time - startTime) * 1000f;

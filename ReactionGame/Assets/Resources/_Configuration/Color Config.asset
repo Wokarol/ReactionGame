@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44b11f5ff3a018047a555827b1b18c6f, type: 3}
   m_Name: Color Config
   m_EditorClassIdentifier: 
-  background: {r: 0.1764706, g: 0.20000002, b: 0.227451, a: 1}
+  background: {r: 0.3019608, g: 0.3019608, b: 0.3019608, a: 1}
   accents: {r: 1, g: 1, b: 1, a: 1}

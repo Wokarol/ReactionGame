@@ -52,6 +52,8 @@ public class CardGameplayDirector : MonoBehaviour
     private bool takesAnswer = true;
     private bool queuesAnswer = false;
 
+    private bool active = true;
+
     private int queuedAnswer = -1;
 
     private CardController lastModelCard;
@@ -82,12 +84,15 @@ public class CardGameplayDirector : MonoBehaviour
 
         core = new Wokarol.GameplayCores.ReactionChooserCore<CardData>(CardData);
         core.OnNewTable += SpawnCards;
+
+        Messenger.Default.AddListener<GameplayEvents.GameOver>(e => active = false);
     }
 
     private void OnDestroy()
     {
         core.Dispose();
         core.OnNewTable -= SpawnCards;
+        Messenger.Default.RemoveAllListenersFor(this);
     }
 
     private void Start()
@@ -99,7 +104,7 @@ public class CardGameplayDirector : MonoBehaviour
     {
         #region AUTO_ANSWER
 #if UNITY_EDITOR
-        if (autoAnswer && takesAnswer) {
+        if (autoAnswer && takesAnswer && active) {
             switch (autoAnswerType) {
                 case DebugAutoAnswerTypes.Correct:
                     AnswerCorrect();
@@ -117,7 +122,7 @@ public class CardGameplayDirector : MonoBehaviour
                     Answer(Random.Range(0, candidatesCache.Length));
                     break;
             }
-        }  
+        }
 #endif
         #endregion
 
@@ -129,6 +134,8 @@ public class CardGameplayDirector : MonoBehaviour
 
     void Answer(int i)
     {
+        if (!active) return;
+
         if (takesAnswer) {
             takesAnswer = queuesAnswer = false;
 
@@ -138,7 +145,7 @@ public class CardGameplayDirector : MonoBehaviour
             } else {
                 PlayFailedAnimation(i, NewTable);
             }
-        } else if(queuesAnswer) {
+        } else if (queuesAnswer) {
             Debug.Log("Queued!!!");
             queuesAnswer = false;
             queuedAnswer = i;
@@ -201,6 +208,8 @@ public class CardGameplayDirector : MonoBehaviour
 
     void SpawnCards(CardData modelData, List<CardData> candData)
     {
+        if (!active) return;
+
         takesAnswer = false;
         queuesAnswer = false;
 
@@ -281,16 +290,16 @@ public class CardGameplayDirector : MonoBehaviour
                 cardPrefab,
                 modelCardSpot.transform.position + (Vector3.down * modelSpawnDistance),
                 Quaternion.Euler(0, 0, Random.Range(-180f, 180f)));
-            if(Application.isEditor)
+            if (Application.isEditor)
                 card.gameObject.name = $"{cardPrefab.name} Model [{modelCardsList.Count}]";
             modelCardsList.Add(card);
         } else {
             card = modelCardQueue.Dequeue();
             card.ResetFade();
             card.transform.SetPositionAndRotation(
-                modelCardSpot.transform.position + (Vector3.down * modelSpawnDistance), 
+                modelCardSpot.transform.position + (Vector3.down * modelSpawnDistance),
                 Quaternion.Euler(0, 0, Random.Range(-180f, 180f)));
-            
+
             foreach (var c in modelCardsList) {
                 c.SoringOrder -= 1;
             }
@@ -301,7 +310,7 @@ public class CardGameplayDirector : MonoBehaviour
         lastModelCard = card;
         card.SetCard(data);
 
-        if(modelCardsList.Count >= maxVisibleCards) {
+        if (modelCardsList.Count >= maxVisibleCards) {
             modelCardQueue.Peek().FadeOut(animationScale);
         }
 
@@ -316,7 +325,7 @@ public class CardGameplayDirector : MonoBehaviour
     private void AnswerCorrect()
     {
         for (int i = 0; i < core.Candidates.Count; i++) {
-            if(core.Candidates[i] == core.Model) {
+            if (core.Candidates[i] == core.Model) {
                 Answer(i);
                 return;
             }
@@ -326,7 +335,7 @@ public class CardGameplayDirector : MonoBehaviour
     [Button("Answer Wrong", ButtonAttribute.EnableMode.Playmode)]
     private void AnswerWrong()
     {
-        if(core.Candidates[0] != core.Model) {
+        if (core.Candidates[0] != core.Model) {
             Answer(0);
         } else {
             Answer(1);

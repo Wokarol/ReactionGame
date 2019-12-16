@@ -35,7 +35,7 @@ public class HealthSystem : MonoBehaviour
         HealthChanged?.Invoke();
 
         if(CurrentHealth == 0) {
-            Debug.Log("Game Over");
+            Messenger.Default.SendMessage(new GameplayEvents.GameOver());
         }
     }
     [Button("+", ButtonAttribute.EnableMode.Playmode)]

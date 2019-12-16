@@ -21,4 +21,9 @@
     {
 
     }
+
+    public struct GameOver
+    {
+
+    }
 }
