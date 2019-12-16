@@ -1364,6 +1364,7 @@ MonoBehaviour:
   modelSpawnDistance: 11
   maxVisibleCards: 5
   deathCounter: 1500
+  gameStartDelay: 0.75
   animationScale: 0.5
   cleanupTimePerCard: 0.3
   cleanupTimeInterval: 0.1
