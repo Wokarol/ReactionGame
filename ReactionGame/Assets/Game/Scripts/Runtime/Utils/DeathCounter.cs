@@ -9,7 +9,7 @@ using DG.Tweening;
 public class DeathCounter : MonoBehaviour
 {
     [SerializeField, Range(200, 5000)] private int deathTimeInMS = 1500;
-    [SerializeField] private Image stateDisplay = null;
+    [SerializeField] private DeathCounterDisplay display = null;
 
     private bool timerActive = false;
     private bool wasTriggered = false;
@@ -31,7 +31,7 @@ public class DeathCounter : MonoBehaviour
 
     private void Start()
     {
-        stateDisplay.fillAmount = 0;
+        display.Value = 0;
     }
 
     private void Update()
@@ -42,7 +42,7 @@ public class DeathCounter : MonoBehaviour
         float timePassed = (Time.time - startTime) * 1000f;
         float timerState = Mathf.InverseLerp(0, deathTimeInMS, timePassed);
 
-        stateDisplay.fillAmount = timerState;
+        display.Value = timerState;
 
         if(!wasTriggered && timerState >= 1) {
             wasTriggered = true;
@@ -61,6 +61,6 @@ public class DeathCounter : MonoBehaviour
     {
         timerActive = false;
         wasTriggered = false;
-        stateDisplay.DOFillAmount(0, 0.075f);
+        display.DOChange(0, 0.075f);
     }
 }
