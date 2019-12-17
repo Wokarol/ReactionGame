@@ -59,7 +59,9 @@ public class CardController : MonoBehaviour, IPointerClickHandler
     }
 
     [Button("Fade into back", ButtonAttribute.EnableMode.Playmode)]
-    public void FadeIntoBack(float scale = 1)
+    public void FadeIntoBack() => FadeIntoBack(1);
+
+    public void FadeIntoBack(float scale)
     {
         borderColor.DOTint(inactiveTint, fadeIntoBackTime * scale);
 
@@ -70,7 +72,9 @@ public class CardController : MonoBehaviour, IPointerClickHandler
     }
 
     [Button("Fade out", ButtonAttribute.EnableMode.Playmode)]
-    public void FadeOut(float scale = 1)
+    public void FadeOut() => FadeOut(1);
+
+    public void FadeOut(float scale)
     {
         borderColor.DOAlpha(0, fadeOutTime * scale);
         patternColor.DOAlpha(0, fadeOutTime * scale);
