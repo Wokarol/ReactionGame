@@ -37,18 +37,18 @@ public class HeartContainer : MonoBehaviour
 
         fillImage.DOFade(0, fadeDuration)
             .SetEase(fadeEase)
-            .SetUpdate(false);
+            .SetUpdate(true);
 
         const Ease ease = Ease.InSine;
         blastImage.DOFade(0, blastDuration)
             .SetEase(ease)
-            .SetUpdate(false);
+            .SetUpdate(true);
         blastImage.transform.DOScale(newScale, blastDuration)
             .SetEase(ease)
-            .SetUpdate(false);
+            .SetUpdate(true);
         blastImage.transform.DORotate(Vector3.forward * newRotation, blastDuration)
             .SetEase(ease)
-            .SetUpdate(false);
+            .SetUpdate(true);
     }
 
     [Button("Fade In", ButtonAttribute.EnableMode.Playmode)]

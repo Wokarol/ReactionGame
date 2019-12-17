@@ -15,7 +15,6 @@ public class CardGameplayDirector : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private float modelSpawnDistance = 15;
     [SerializeField, Range(1, 20)] private int maxVisibleCards = 5;
-    [SerializeField, Range(250, 2000)] private int deathCounter = 1500;
     [SerializeField] private float gameStartDelay = 0.5f;
 
     [BoxGroup(animGroup), SerializeField] private float animationScale = 1;

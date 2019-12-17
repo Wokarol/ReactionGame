@@ -698,21 +698,21 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 200
-      value: 150
-      inSlope: 0
-      outSlope: -0.1625
+      value: 250
+      inSlope: -0.17688857
+      outSlope: -0.17688857
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.99860144
     - serializedVersion: 3
-      time: 1000
+      time: 1500
       value: 20
-      inSlope: -0.1625
-      outSlope: 0
+      inSlope: -0.17695643
+      outSlope: -0.17695643
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
+      inWeight: 1
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -724,28 +724,46 @@ MonoBehaviour:
       time: 0
       value: 1
       inSlope: 0.000004160906
-      outSlope: 0.000004160906
-      tangentMode: 0
+      outSlope: 0.00025
+      tangentMode: 69
       weightedMode: 0
       inWeight: 0
       outWeight: 0.39135224
     - serializedVersion: 3
-      time: 2527.4087
-      value: 1.9976289
-      inSlope: 0.00039888802
-      outSlope: 0.00039888802
-      tangentMode: 0
+      time: 2000
+      value: 1.5
+      inSlope: 0.00025
+      outSlope: 0.00041666668
+      tangentMode: 69
       weightedMode: 0
-      inWeight: 0.20602578
-      outWeight: 0.030328626
+      inWeight: 0.29965296
+      outWeight: 0.07173096
     - serializedVersion: 3
-      time: 20011.262
-      value: 4.0118
-      inSlope: 0.000029256391
-      outSlope: 0.000029256391
-      tangentMode: 0
+      time: 8000
+      value: 4
+      inSlope: 0.00041666668
+      outSlope: 0.0005
+      tangentMode: 69
       weightedMode: 0
-      inWeight: 0.06272208
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 20000
+      value: 10
+      inSlope: 0.0005
+      outSlope: 0.00007894737
+      tangentMode: 69
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 400000
+      value: 40
+      inSlope: 0.00007894737
+      outSlope: 0
+      tangentMode: 69
+      weightedMode: 0
+      inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -1399,9 +1417,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelSpawnDistance: 11
   maxVisibleCards: 5
-  deathCounter: 1500
   gameStartDelay: 0.75
-  animationScale: 0.5
+  animationScale: 1.5
   cleanupTimePerCard: 0.3
   cleanupTimeInterval: 0.1
   patternTime: 0.5
@@ -1472,7 +1489,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d215f6a66393d564daa1d4847a7b7ead, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deathTimeInMS: 1300
+  deathTimeInMS: 3000
   display: {fileID: 944486854}
 --- !u!1 &1043377827
 GameObject:

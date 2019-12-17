@@ -55,9 +55,9 @@ MonoBehaviour:
   fadeDuration: 0.2
   fadeEase: 4
   blastImage: {fileID: 3023433096995793005}
-  newScale: 5
+  newScale: 10
   newRotation: 30
-  blastDuration: 0.2
+  blastDuration: 1
 --- !u!1 &2451226630832607759
 GameObject:
   m_ObjectHideFlags: 0
