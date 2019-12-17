@@ -27,6 +27,7 @@ public class ScoreController : MonoBehaviour
         Messenger m = Messenger.Default;
         m.AddListener<Answered>(OnAnswered);
         m.AddListener<TableReady>(e => StartTimer());
+        m.AddListener<GameOver>(e => Game.SessionEndData.FillEndData(Score));
     }
 
     private void OnDisable()

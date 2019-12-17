@@ -2261,7 +2261,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 1043377831}
   triggerToCall: CoverScreen
-  targetScene: CardsPrototype
+  targetScene: GameScene
   gameOverDelay: 0.5
   sceneSwitchDelay: 0.6
 --- !u!4 &1948660936
