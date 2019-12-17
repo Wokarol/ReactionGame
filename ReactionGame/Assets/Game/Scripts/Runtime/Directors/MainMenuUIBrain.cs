@@ -13,6 +13,9 @@ public class MainMenuUIBrain : MonoBehaviour
     [SerializeField] private Button playButton = null;
     [SerializeField] private Button quitButton = null;
     [Space]
+    [SerializeField] private string highscoreFormat = "{0:0 000 000}";
+    [SerializeField] private TMPro.TMP_Text highscoreValue;
+    [Space]
     [SerializeField] private string gameScene = "";
     [Space]
     [SerializeField] private Animator animator = null;
@@ -32,6 +35,8 @@ public class MainMenuUIBrain : MonoBehaviour
         quitButton.onClick.AddListener(() => Application.Quit());
 
         hideTriggerHash = Animator.StringToHash(uiHideTrigger);
+
+        highscoreValue.text = string.Format(highscoreFormat, PlayerPrefs.GetInt(SaveTags.Highscore));
     }
 
     private void OnPlayButton()

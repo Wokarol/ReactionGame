@@ -7,13 +7,18 @@ public static class Game
     public static SessionEndData SessionEndData { get; } = new SessionEndData();
 }
 
+public static class SaveTags
+{
+    public const string Highscore = "Highscore";
+}
+
 public class SessionEndData
 {
-    public int EndScore { get; private set; }
+    public int Score { get; private set; }
 
     public void FillEndData(int score)
     {
         Debug.Log($"Filled end data => score:{score}");
-        EndScore = score;
+        Score = score;
     }
 }
