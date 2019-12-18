@@ -14,6 +14,7 @@ public class HighScoreController : MonoBehaviour
         if(highscore < score) {
             highscore = score;
             PlayerPrefs.SetInt(SaveTags.Highscore, highscore);
+            PlayerPrefs.Save();
         }
 
         scoreText.text = string.Format(scoreTextFormat, score, highscore);
