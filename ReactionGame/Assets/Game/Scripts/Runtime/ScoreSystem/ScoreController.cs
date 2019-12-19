@@ -37,13 +37,13 @@ public class ScoreController : MonoBehaviour
 
     private void StartTimer()
     {
-        startTime = Time.time;
+        startTime = Time.unscaledTime;
     }
 
     private void OnAnswered(Answered e)
     {
         if (e.Correct) {
-            float reactionTime = (Time.time - startTime) * 1000;
+            float reactionTime = (Time.unscaledTime - startTime) * 1000;
             float rawScore = scoreByTime.Evaluate(reactionTime);
 
             int gainedPoints = Mathf.CeilToInt(rawScore / scoreRounding) * scoreRounding;
